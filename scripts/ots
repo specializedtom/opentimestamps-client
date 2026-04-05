@@ -1,0 +1,10 @@
+#!/usr/bin/env php
+<?php
+
+declare(strict_types=1);
+
+use OpenTimestamps\Client\Version;
+
+require_once dirname(__DIR__) . '/vendor/autoload.php';
+
+echo "OpenTimestamps PHP client v" . Version::STRING . PHP_EOL;

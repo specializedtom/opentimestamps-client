@@ -1,0 +1,30 @@
+{
+  "name": "opentimestamps/client",
+  "description": "OpenTimestamps client for PHP 8.4",
+  "type": "library",
+  "license": "LGPL-3.0-or-later",
+  "require": {
+    "php": "^8.4"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^11.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "OpenTimestamps\\Client\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "OpenTimestamps\\Client\\Tests\\": "tests/"
+    }
+  },
+  "bin": [
+    "scripts/ots"
+  ],
+  "scripts": {
+    "test": "phpunit"
+  },
+  "minimum-stability": "stable",
+  "prefer-stable": true
+}
