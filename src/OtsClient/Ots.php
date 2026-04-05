@@ -4,13 +4,26 @@ declare(strict_types=1);
 
 namespace OpenTimestamps\Client\OtsClient;
 
+use OpenTimestamps\Client\Version;
+
 final class Ots
 {
     public static function main(array $argv): int
     {
-        $args = Args::parse(array_slice($argv, 1));
+        try {
+            $args = Args::parseOtsArgs(array_slice($argv, 1));
+        } catch (\InvalidArgumentException $exception) {
+            fwrite(STDERR, $exception->getMessage() . "\n");
+            self::printHelp();
+            return 1;
+        }
 
-        if ($args->command === '' || in_array($args->command, ['-h', '--help'], true)) {
+        if ($args->showVersion) {
+            fwrite(STDOUT, 'v' . Version::STRING . "\n");
+            return 0;
+        }
+
+        if ($args->command === null || in_array($args->command, ['-h', '--help'], true)) {
             self::printHelp();
             return 0;
         }
@@ -21,6 +34,7 @@ final class Ots
             'upgrade' => self::unsupported('upgrade'),
             'verify' => self::unsupported('verify'),
             'info' => self::unsupported('info'),
+            'git-extract' => self::unsupported('git-extract'),
             default => self::unknown($args->command),
         };
     }
@@ -46,7 +60,7 @@ final class Ots
 
     private static function printHelp(): void
     {
-        fwrite(STDOUT, "Usage: ots <command> [options]\n");
-        fwrite(STDOUT, "Commands: stamp, upgrade, verify, info, prune\n");
+        fwrite(STDOUT, "Usage: ots [common options] <command> [command options]\n");
+        fwrite(STDOUT, "Commands: stamp|s, upgrade|u, verify|v, info|i, prune|p, git-extract\n");
     }
 }
