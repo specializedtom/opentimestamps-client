@@ -63,4 +63,33 @@ final class Timestamp
             static fn (Attestation $current): bool => $current != $attestation
         ));
     }
+
+    public function merge(self $other): void
+    {
+        foreach ($other->attestations() as $attestation) {
+            $this->addAttestation($attestation);
+        }
+
+        foreach ($other->ops() as $operation => $subStamp) {
+            $node = $this->ops[$operation] ??= new self($subStamp->msg());
+            $node->merge($subStamp);
+        }
+    }
+
+    /**
+     * @return list<array{0:string,1:Attestation}>
+     */
+    public function allAttestations(): array
+    {
+        $result = [];
+        foreach ($this->attestations as $attestation) {
+            $result[] = [$this->msg, $attestation];
+        }
+
+        foreach ($this->ops as $subStamp) {
+            array_push($result, ...$subStamp->allAttestations());
+        }
+
+        return $result;
+    }
 }
